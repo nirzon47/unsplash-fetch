@@ -2,6 +2,9 @@
 const form = document.getElementById('form')
 const result = document.getElementById('image-container')
 const more = document.getElementById('more')
+const loading1 = document.getElementById('loading-1')
+const loading2 = document.getElementById('loading-2')
+const moreSection = document.getElementById('more-section')
 
 // Variables
 let page = 1
@@ -17,12 +20,18 @@ form.addEventListener('submit', (e) => {
 // Functions
 
 const getImages = async (query) => {
+	loading1.classList.remove('opacity-0')
 	await fetch(
 		`https://api.unsplash.com/search/photos?page=${page}&per_page=30&query=${query}&client_id=${API_KEY}`
 	)
 		.then((res) => res.json())
 		.then((results) => {
+			if (results.results.length > 0) {
+				moreSection.classList.remove('opacity-0')
+			}
+
 			renderImages(results.results)
+			loading1.classList.add('opacity-0')
 		})
 		.catch((err) => console.log(err))
 }
