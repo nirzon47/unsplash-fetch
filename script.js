@@ -7,6 +7,7 @@ const loading2 = document.getElementById('loading-2')
 const moreSection = document.getElementById('more-section')
 
 // Variables
+let totalPages = 1
 let page = 1
 
 // Event Listeners
@@ -17,10 +18,17 @@ form.addEventListener('submit', (e) => {
 	getImages(form.elements[0].value)
 })
 
+more.addEventListener('click', () => {
+	page++
+	getImages(form.elements[0].value)
+})
+
 // Functions
 
 const getImages = async (query) => {
 	loading1.classList.remove('opacity-0')
+	loading2.classList.remove('opacity-0')
+
 	await fetch(
 		`https://api.unsplash.com/search/photos?page=${page}&per_page=30&query=${query}&client_id=${API_KEY}`
 	)
@@ -30,8 +38,16 @@ const getImages = async (query) => {
 				moreSection.classList.remove('opacity-0')
 			}
 
+			totalPages = results.total_pages
+
+			if (page === totalPages) {
+				moreSection.classList.add('opacity-0')
+			}
+
 			renderImages(results.results)
+
 			loading1.classList.add('opacity-0')
+			loading2.classList.add('opacity-0')
 		})
 		.catch((err) => console.log(err))
 }
@@ -65,6 +81,4 @@ const renderImages = (results) => {
 
 		result.appendChild(div)
 	})
-
-	page++
 }
